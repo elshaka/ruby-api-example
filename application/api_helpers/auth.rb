@@ -1,3 +1,5 @@
+require 'jwt'
+
 class Api
   module Auth
     extend ActiveSupport::Concern
@@ -8,11 +10,25 @@ class Api
 
     module HelperMethods
       def authenticate!
-        # Library to authenticate user can go here
+        token = request.env["Authorization"].scan(/^Bearer (.+)$/).flatten.first
+        payload = decode_token token
+
+        @current_user = Api::Models::User.with_pk! payload["id"]
+      rescue
+        error!({}, 401)
       end
 
       def current_user
         @current_user
+      end
+
+      def issue_token user
+        payload = {id: user.id}
+        JWT.encode payload, TOKEN_SECRET, 'HS256'
+      end
+
+      def decode_token token
+        JWT.decode(token, TOKEN_SECRET, 'HS256').first
       end
     end
   end

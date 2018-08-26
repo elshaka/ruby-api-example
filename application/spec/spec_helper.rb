@@ -21,9 +21,11 @@ end
 
 module RSpecHelpers
   include Rack::Test::Methods
+  include Api::Auth::HelperMethods
 
   def login_as user
-    Api.class_variable_set(:@@current_user, user)
+    token = issue_token user
+    {"Authorization" => "Bearer #{token}"}
   end
 
   def app
@@ -38,18 +40,6 @@ module RSpecHelpers
     scope = Api.new
     scope.instance_variable_set(:@current_user, opts[:as_user])
     scope
-  end
-end
-
-class Api
-  helpers do
-    def current_user
-      begin
-        @current_user = Api.class_variable_get(:@@current_user)
-      rescue
-        nil
-      end
-    end
   end
 end
 
