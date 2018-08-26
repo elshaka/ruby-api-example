@@ -30,12 +30,10 @@ class Api
     end
     put '/:id' do
       authenticate!
-
       user = Models::User.find(id: params[:id])
       error!({}, 404) unless user
 
       user_update_form = Forms::UserUpdate.new(params[:user]).validate
-
       if user_update_form.success?
         error!({}, 403) unless current_user.can? :edit, user
 
@@ -43,6 +41,20 @@ class Api
         present :user, user, with: Entities::User
       else
         error!({errors: user_form.errors}, 400)
+      end
+    end
+
+    desc 'Logs in a user'
+    params do
+      requires :email, type: String
+      requires :password, type: String
+    end
+    post '/login' do
+      begin
+        user = Models::User.where(email: params[:email], password: params[:password]).first
+        error!({}, 401) unless user
+
+        {jwt: issue_token(user)}
       end
     end
   end

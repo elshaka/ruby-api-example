@@ -25,7 +25,7 @@ module RSpecHelpers
 
   def login_as user
     token = issue_token user
-    {"Authorization" => "Bearer #{token}"}
+    {'HTTP_AUTHORIZATION' => "Bearer #{token}"}
   end
 
   def app

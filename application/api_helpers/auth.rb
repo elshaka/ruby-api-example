@@ -10,7 +10,7 @@ class Api
 
     module HelperMethods
       def authenticate!
-        token = request.env["Authorization"].scan(/^Bearer (.+)$/).flatten.first
+        token = request.env['HTTP_AUTHORIZATION'].scan(/^Bearer (.+)$/).flatten.first
         payload = decode_token token
 
         @current_user = Api::Models::User.with_pk! payload["id"]
