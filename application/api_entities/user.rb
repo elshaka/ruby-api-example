@@ -1,6 +1,6 @@
 class Api
   module Entities
-    class UserEntity < UserParamsEntity
+    class User < UserParams
       unexpose :password
     end
   end

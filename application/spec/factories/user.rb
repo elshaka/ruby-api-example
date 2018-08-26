@@ -5,5 +5,12 @@ FactoryGirl.define do
     email { Faker::Internet.email }
     password Digest::MD5.hexdigest 'test'
     born_on Date.new(2000, 1, 1)
+
+    trait :empty do
+      first_name ""
+      last_name ""
+      email ""
+      password ""
+    end
   end
 end
