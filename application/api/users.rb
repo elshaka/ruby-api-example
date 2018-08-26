@@ -4,10 +4,8 @@ class Api
       includes :basic_search
     end
     get do
-      users = SEQUEL_DB[:users].all
-      {
-        data: users
-      }
+      users = Models::User.all
+      present :users, users, with: Entities::UserEntity
     end
   end
 end
