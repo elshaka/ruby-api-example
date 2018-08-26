@@ -14,13 +14,13 @@ class Api
       requires :user, type: Entities::UserParams
     end
     post do
-      validation = Validators::User.new(params[:user]).validate
+      user_form = Forms::User.new(params[:user]).validate
 
-      if validation.success?
-        user = Models::User.create params[:user]
+      if user_form.success?
+        user = Models::User.create user_form.to_hash
         present :user, user, with: Entities::User
       else
-        error!({errors: validation.errors}, 400)
+        error!({errors: user_form.errors}, 400)
       end
     end
   end

@@ -1,5 +1,5 @@
 class Api
-  module Validators
+  module Forms
     class User
       include Hanami::Validations
 

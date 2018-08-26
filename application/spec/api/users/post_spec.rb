@@ -3,35 +3,37 @@ require 'spec_helper'
 describe 'POST /api/users' do
   context 'with valid params' do
     let(:new_user_params) { FactoryGirl.attributes_for(:user) }
-    let(:new_user) { Api::Entities::User.represent(Api::Models::User.new new_user_params) }
+    let(:expected_user_attrs) { [:first_name, :last_name, :email] }
 
     before(:each) do
       post 'api/v1.0/users', user: new_user_params
     end
 
     it 'should create a new user' do
-      last_user = Api::Entities::User.represent(Api::Models::User.last)
+      last_user = Api::Models::User.last
 
-      expect(last_user.as_json).to eq new_user.as_json
+      expected_user_attrs.each do |attr|
+        expect(last_user[attr]).to eq new_user_params[attr]
+      end
     end
 
     it 'should return the created user in the response' do
-      expect(response_body[:user]).to eq new_user.as_json
+      expected_user_attrs.each do |attr|
+        expect(response_body[:user][attr]).to eq new_user_params[attr]
+      end
     end
   end
 
   context 'with invalid params' do
     let(:invalid_user_params) { FactoryGirl.attributes_for(:user, :empty)}
-    let(:invalid_user) { Api::Entities::User.represent(Api::Models::User.new invalid_user_params) }
+    let(:user_count) { Api::Models::User.count }
 
     before(:each) do
       post 'api/v1.0/users', user: invalid_user_params
     end
 
     it 'should not create a user' do
-      last_user = Api::Entities::User.represent(Api::Models::User.last)
-
-      expect(last_user.as_json).to_not eq invalid_user.as_json
+      expect(Api::Models::User.count).to eq user_count
     end
 
     it 'should return a 400 error' do
