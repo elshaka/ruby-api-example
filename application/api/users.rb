@@ -44,6 +44,29 @@ class Api
       end
     end
 
+    desc 'Changes user password'
+    params do
+      requires :password, type: String
+      requires :password_confirmation, type: String
+    end
+    patch '/:id' do
+      authenticate!
+
+      user = Models::User.find(id: params[:id])
+      error!({}, 404) unless user
+
+      user_password_form = Forms::UserPassword.new(params).validate
+
+      if user_password_form.success?
+        error!({}, 403) unless current_user.can? :edit, user
+
+        user.update password: user_password_form["password"]
+        present :user, user, with: Entities::User
+      else
+        error!({errors: user_password_form.errors}, 400)
+      end
+    end
+
     desc 'Logs in a user'
     params do
       requires :email, type: String
