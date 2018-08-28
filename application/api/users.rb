@@ -40,7 +40,7 @@ class Api
         user.update user_update_form.to_hash
         present :user, user, with: Entities::User
       else
-        error!({errors: user_form.errors}, 400)
+        error!({errors: user_update_form.errors}, 400)
       end
     end
 
@@ -60,7 +60,7 @@ class Api
       if user_password_form.success?
         error!({}, 403) unless current_user.can? :edit, user
 
-        user.update password: user_password_form["password"]
+        user.update password: user_password_form[:password]
         present :user, user, with: Entities::User
       else
         error!({errors: user_password_form.errors}, 400)

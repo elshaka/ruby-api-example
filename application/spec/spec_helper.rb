@@ -60,6 +60,7 @@ RSpec.configure do |config|
   config.color = true
   config.tty = true
   config.formatter = :documentation
+  config.backtrace_exclusion_patterns << /\/.rvm\//
 
   config.around(:all) do |example|
     Sequel.transaction [SEQUEL_DB], rollback: :always do

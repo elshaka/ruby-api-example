@@ -1,13 +1,13 @@
 class Api
   module Forms
     class User
-      include Hanami::Validations
+      include Hanami::Validations::Form
 
       validations do
-        required("first_name") { filled? & str? }
-        required("last_name") { filled? & str? }
-        required("password") { filled? & str? & size?(8..100) }
-        required("email")  { filled? & str? }
+        required(:first_name) { filled? & str? }
+        required(:last_name) { filled? & str? }
+        required(:password) { filled? & str? & size?(8..100) }
+        required(:email)  { filled? & str? }
       end
     end
   end
