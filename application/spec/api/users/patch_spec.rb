@@ -19,6 +19,19 @@ describe 'PATCH /api/users/:id' do
         expect(updated_password).to eq new_password
       end
 
+      it 'should queue and send a password update email' do
+        patch "/api/v1.0/users/#{user.id}", params, user_auth_header
+
+        queued_job_class = Sidekiq::Worker.jobs.last["class"]
+        expect(queued_job_class).to eq "Api::Workers::Mailer"
+
+        Sidekiq::Worker.drain_all
+
+        sent_email = Mail::TestMailer.deliveries.last
+        expect(sent_email.to.first).to eq user.email
+        expect(sent_email.subject).to match /Password updated/i
+      end
+
       it 'should not allow to update another user password' do
         patch "/api/v1.0/users/#{another_user.id}", params, user_auth_header
 

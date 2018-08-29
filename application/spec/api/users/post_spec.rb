@@ -16,6 +16,17 @@ describe 'POST /api/users' do
       end
     end
 
+    it 'should queue and send a confirmation email' do
+      queued_job_class = Sidekiq::Worker.jobs.last["class"]
+      expect(queued_job_class).to eq "Api::Workers::Mailer"
+
+      Sidekiq::Worker.drain_all
+
+      sent_email = Mail::TestMailer.deliveries.last
+      expect(sent_email.to.first).to eq last_user.email
+      expect(sent_email.subject).to match /Welcome/i
+    end
+
     context 'the response' do
       it 'should return the created user' do
         expected_user_attrs.each do |attr|

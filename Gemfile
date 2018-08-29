@@ -21,6 +21,7 @@ gem 'dry-validation', '0.10.4' # validation methods for reform
 gem 'ability_list', '0.0.4'
 gem 'activesupport', '5.0.0'
 gem 'jwt', '2.1.0'
+gem 'sidekiq', '5.2.1'
 
 group :development, :test do
   gem 'awesome_print', '1.7.0'

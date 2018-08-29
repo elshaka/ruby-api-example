@@ -4,6 +4,7 @@ ENV['RACK_ENV'] = 'test'
 require './application/api'
 require 'faker'
 require 'factory_girl'
+require 'sidekiq/testing'
 
 # Load up all application files that we'll be testing in the suites
 Dir['./application/models/**/*.rb'].sort.each     { |rb| require rb }
@@ -52,6 +53,12 @@ end
 
 Faker::Config.locale = 'en-US'
 
+Sidekiq::Testing.fake!
+
+Mail.defaults do
+  delivery_method :test
+end
+
 RSpec.configure do |config|
   config.extend RSpecHelpers
   config.include RSpecHelpers
@@ -61,6 +68,16 @@ RSpec.configure do |config|
   config.tty = true
   config.formatter = :documentation
   config.backtrace_exclusion_patterns << /\/.rvm\//
+
+  config.before(:all) do
+    Sidekiq::Worker.clear_all
+    Mail::TestMailer.deliveries.clear
+  end
+
+  config.before(:each) do
+    Sidekiq::Worker.clear_all
+    Mail::TestMailer.deliveries.clear
+  end
 
   config.around(:all) do |example|
     Sequel.transaction [SEQUEL_DB], rollback: :always do

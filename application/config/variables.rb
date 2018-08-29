@@ -20,7 +20,11 @@ SUPPORT_PHONE_NUMBER  = ENV.fetch('SUPPORT_PHONE_NUMBER').freeze
 SUPPORT_EMAIL         = ENV.fetch('SUPPORT_EMAIL').freeze
 INTERNAL_EMAIL        = ENV.fetch('INTERNAL_EMAIL').freeze
 DATABASE_URL          = ENV.fetch('DATABASE_URL').freeze
-MAIL_URL              = ENV.fetch('MAIL_URL').freeze
+MAIL_SERVER           = ENV.fetch('MAIL_SERVER').freeze
+MAIL_USERNAME         = ENV.fetch('MAIL_USERNAME').freeze
+MAIL_PASSWORD         = ENV.fetch('MAIL_PASSWORD').freeze
+
 SYSTEM_EMAIL          = ENV.fetch('SYSTEM_EMAIL').freeze
 SITE_URL              = ENV.fetch('SITE_URL').freeze
 TOKEN_SECRET          = ENV.fetch('TOKEN_SECRET').freeze
+
