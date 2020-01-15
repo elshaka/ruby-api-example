@@ -12,6 +12,11 @@ class Api
       can :edit, Models::User do |check_user|
         next true if user.id == check_user.id
       end
+
+      # Only current user can retrieve themselves
+      can :show, Models::User do |check_user|
+        next true if user.id == check_user.id
+      end
     end
   end
 end

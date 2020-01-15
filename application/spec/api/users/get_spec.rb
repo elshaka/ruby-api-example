@@ -13,4 +13,14 @@ describe 'GET /api/users' do
     expect(emails).to include @u1.email
     expect(emails).to include @u2.email
   end
+
+  it 'should retrieve the current user' do
+    auth_header = login_as @u1
+    get "api/v1.0/users/#{@u1.id}", auth_header
+    retrieved_user = response_body[:user]
+
+    [:first_name, :last_name, :email].each do |attr|
+      expect(retrieved_user[attr]).to eq @u1[attr]
+    end
+  end
 end

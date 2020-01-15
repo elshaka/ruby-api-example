@@ -24,6 +24,16 @@ class Api
       end
     end
 
+    desc 'Retrieves a user'
+    get '/:id' do
+      authenticate!
+      user = Models::User.find(id: params[:id])
+      error!({}, 404) unless user
+      error!({}, 403) unless current_user.can? :edit, user
+
+      present :user, user, with: Entities::User
+    end
+
     desc 'Updates a user'
     params do
       requires :user, type: Entities::UserUpdateParams
